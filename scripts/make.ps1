@@ -14,7 +14,9 @@ $env:ELECTRON_BUILDER_CACHE = Join-Path $root ".builder-cache"
 $env:ELECTRON_BUILDER_BINARIES_MIRROR = "https://npmmirror.com/mirrors/electron-builder-binaries/"
 
 Write-Host "==> electron-builder (dir + portable)..."
-npx electron-builder --win dir portable
+# --publish never: 在带 git tag 的 CI 环境下，electron-builder 会自动触发隐式发布，
+# 显式关闭（发布由 GitHub Actions workflow / 用户手动完成）
+npx electron-builder --win dir portable --publish never
 if ($LASTEXITCODE -ne 0) { throw "Build failed" }
 
 # Copy win-unpacked into a clean delivery folder

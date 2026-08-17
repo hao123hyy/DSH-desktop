@@ -32,6 +32,12 @@ const FORCE = process.argv.includes("--force");
 
 (async () => {
   try {
+    // CI 环境（GitHub Actions 等自动设置 CI=true）：构建产物不携带闭包，
+    // 跳过下载以免浪费 200MB；同时保证 npm install 的 electron postinstall 正常执行。
+    if (process.env.CI && !FORCE) {
+      console.log("CI 环境：跳过闭包下载（打包产物不含闭包，用户首装在线下载）");
+      return;
+    }
     if (fs.existsSync(PAYLOAD_MARKER) && !FORCE) {
       console.log("服务端载荷已存在，跳过（--force 可刷新到最新版）");
       return;

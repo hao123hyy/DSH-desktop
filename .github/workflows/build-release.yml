@@ -20,10 +20,12 @@ jobs:
         with:
           node-version: 24
 
-      # --ignore-scripts: 跳过 postinstall 的闭包下载（构建产物不携带闭包，
-      # 也不携带 node.exe——两者都由应用首次运行时在线下载）
+      # 普通 npm install（不能 --ignore-scripts：electron 包的 postinstall 负责下载
+      # Electron 二进制，跳过会导致 electronDist 缺失而构建失败）。
+      # 闭包下载由 postinstall -> scripts/prepare-payload.js 完成，该脚本检测到
+      # CI=true 会自动跳过（构建产物不携带闭包与 node.exe，两者由应用首装在线下载）。
       - name: Install dependencies
-        run: npm install --ignore-scripts --no-audit --no-fund
+        run: npm install --no-audit --no-fund
 
       - name: Build (npm run make)
         run: npm run make
