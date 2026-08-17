@@ -1,0 +1,52 @@
+name: Build Release
+
+# 手动触发，或推送 v* tag 时自动构建并发布 GitHub Release。
+# 注意：闭源闭包（@deepseek-ai/dsh）不在仓库、也不打进包体——
+# 最终用户首次运行 exe 时由应用在线下载。因此构建机只需 node.exe。
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      # --ignore-scripts: 跳过 postinstall 的闭包下载（构建产物不携带闭包，
+      # 也不携带 node.exe——两者都由应用首次运行时在线下载）
+      - name: Install dependencies
+        run: npm install --ignore-scripts --no-audit --no-fund
+
+      - name: Build (npm run make)
+        run: npm run make
+
+      - name: Package delivery zip
+        shell: pwsh
+        run: |
+          $ver = (Get-Content package.json -Raw | ConvertFrom-Json).version
+          tar -a -c -f "dist\dsh-desktop-$ver-win-x64.zip" -C dist DSHDesktop
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dsh-desktop-build
+          path: |
+            dist/*-portable.exe
+            dist/*-win-x64.zip
+
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/*-portable.exe
+            dist/*-win-x64.zip
+          generate_release_notes: true
