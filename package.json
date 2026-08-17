@@ -47,7 +47,7 @@
     },
     "electronDist": "node_modules/electron/dist",
     "portable": {
-      "artifactName": "DSH桌面版-${version}-portable.exe"
+      "artifactName": "dsh-desktop-${version}-portable.exe"
     },
     "directories": {
       "output": "dist",
