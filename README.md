@@ -16,7 +16,7 @@
 1. 在 [Releases](https://github.com/hao123hyy/DSH-desktop/releases) 下载最新版本：
    - **`dsh-desktop-<ver>-win-x64.zip`**（推荐）：解压后双击 `DSH桌面版.exe`；
    - `dsh-desktop-<ver>-portable.exe`：单文件便携版，双击直接运行。
-2. **首次启动需要联网**：应用会自动下载服务端组件（约 200MB）与 Node.js 运行时（约 90MB），窗口内显示进度；下载完成后即开即用，之后**离线可用**。
+2. **首次启动需要下载完整包**：应用会自动下载服务端组件（约 200MB）与 Node.js 运行时（约 90MB），窗口内显示进度；下载完成后即开即用。
 
 ## 工作原理（简要）
 
